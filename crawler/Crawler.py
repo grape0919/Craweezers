@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
+from IPython.display import display
 
 page = 1
 lastPage = False
@@ -53,6 +55,18 @@ while not lastPage:
     print("!@#!@# lastPage:", lastPage)
 
 
+datas = []
+
 for u in news_url_list:
     r = requests.get(u,headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
+    title = soup.find("h3", {'class':'articleTitle'})
+    pub_date = soup.find("span", {'class':'t11'})
+    content = soup.find("div", {'id':'articleBodyContents'})
+
+    news_pair = (title, content, pub_date, u)
+    datas.append(news_pair)
+
+df = pd.DataFrame(datas)
+df.to_csv("./test.csv",sep=",",na_rep='NaN', encoding='utf-8')
+# ,columns=['TITLE', 'COTENT', 'PUB_DATE', 'URL'])
