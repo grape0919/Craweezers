@@ -57,13 +57,14 @@ datas = []
 for u in news_url_list:
     r = requests.get(u,headers=headers)
     soup = BeautifulSoup(r.text, 'html.parser')
-    title = soup.find("h3", {'class':'articleTitle'})
-    pub_date = soup.find("span", {'class':'t11'})
-    content = soup.find("div", {'id':'articleBodyContents'})
+    print("error soup : ", soup)
+    title = soup.find("h3", {'class':'tts_head'}).get_test()
+    pub_date = soup.find("span", {'class':'t11'}).get_test()
+    content = soup.find("div", {'id':'articleBodyContents'}).get_test()
 
     news_pair = (title, content, pub_date, u)
     datas.append(news_pair)
 
 df = pd.DataFrame(datas)
-df.to_csv("./test.csv",sep=",",na_rep='NaN', encoding='utf-8')
+df.to_csv("./test.csv",sep="\t",na_rep='NaN', encoding='utf-8')
 # ,columns=['TITLE', 'COTENT', 'PUB_DATE', 'URL'])
