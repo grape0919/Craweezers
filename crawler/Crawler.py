@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-from IPython.display import display
 
 page = 1
 lastPage = False
@@ -19,9 +18,7 @@ while not lastPage:
     if r.status_code == 200:
 
         soup = BeautifulSoup(r.text, 'html.parser')
-
         # print("!@#!@# result : ",soup.text)
-
 
         news1 = soup.find("ul", {'class':'type06_headline'})
         # print("!@#!@# news1", news1)
