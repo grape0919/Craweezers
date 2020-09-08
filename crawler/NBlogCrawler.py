@@ -49,7 +49,16 @@ while not lastPage:
     temp = soup.find("a", {'class':'button_next'})
     if temp == None:
         # TODO : 마지막 페이지 번호 추출
+        paginationEle = driver.find_element_by_class_name("pagination")
+        pagiEles = paginationEle.find_element_by_class_name("item")
         lp = 0 
+        for e in pagiEles:
+            if lp < int(e.text):
+                lp = int(e.text)
+    
+        if page == lp:
+            lastPage = True
+
     page += 1
 
 print("url length : ", len(urls))
