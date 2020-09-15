@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 from selenium import webdriver as wb
-from selenium.webdriver.support.ui import WebDriverWait
 
 from selenium.webdriver.support import expected_conditions as EC
 import time
@@ -12,7 +11,7 @@ import requests
 # options.add_argument("disable-gpu")
 
 driver = wb.Chrome(executable_path='lib/chromedriver.exe')#, chrome_options=options)
-
+driver.implicitly_wait(10)
 news_url_list = []
 
 driver.implicitly_wait(10)
@@ -48,7 +47,7 @@ while not lastPage:
     for e in elements:
         urls.append(e.get_attribute("href"))
 
-    print("!@#!@# urls : ", urls)
+    print("!@#!@# urls : ", len(urls))
     soup = bs(driver.page_source, 'html.parser')
     temp = soup.find("a", {'class':'button_next'})
     if temp == None:
@@ -65,10 +64,7 @@ while not lastPage:
 
     page += 1
 
-print("url length : ", len(urls))  # 1475
-
-
-time.sleep(10)
+print("!@#!@# result url length : ", len(urls))  # 1475
 
 f = open("./urls.txt", "w")
 for u in urls:
@@ -95,15 +91,38 @@ f.close()
 
 def readAndParsing():
     print("")
+    for r in f.open("").read:
     driver.get(u)
-    titleEl = driver.find_element_by_class_name("se-component-content").find_element_by_class_name("pcol1").text
-    if titleEl == None:
-        titleEl = driver.find_element_by_class_name("itemSubjectBoldfont")
-    
+
+    try:
+        titleEl = driver.find_element_by_class_name("se-title-text")
+    except:
+        try:
+            titleEl = driver.find_element_by_class_name("se_title")htitle
+        except:
+            print("!@#!@# skip url : ", u)
+            continue
+
     title = titleEl.text
-    conts = driver.find_element_by_class_name()
-    
-    dateEl = driver.find_element_by_class_name("se_publishDate")
-    if dateEl == None:
-        dateEl = driver.find_element_by_class_name("_postAddDate")
+
+    conts = driver.find_element_by_class_name("__se_component_area")
+    id = postViewArea
+    try:
+        dateEl = driver.find_element_by_class_name("se_publishDate")
+    except:
+        try:
+            dateEl = driver.find_element_by_class_name("_postAddDate")
+        except:
+            
+            print("!@#!@# skip url : ", u)
+            continue
+
     pub_date = dateEl.text
+
+    blogContent = (title, conts, pub_date)
+
+    crawedDataList.append(blogContent)
+
+
+df = pd.DataFrame(crawedDataList)
+df.to_csv("./test.csv",sep="|",na_rep='NaN')
