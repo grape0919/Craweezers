@@ -5,7 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from selenium.webdriver.support import expected_conditions as EC
 import time
-
+import requests
 # options = wb.ChromeOptions()
 # options.add_argument('headless')
 # options.add_argument('window-size=1920x1080')
@@ -15,16 +15,17 @@ driver = wb.Chrome(executable_path='lib/chromedriver.exe')#, chrome_options=opti
 
 news_url_list = []
 
+driver.implicitly_wait(10)
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.90 Safari/537.36'}
 lp = 0
 url = f"https://section.blog.naver.com/Search/Post.nhn?pageNo=1&rangeType=ALL&orderBy=sim&keyword=%EB%A1%B1%EB%B0%98%20-%EC%B4%88%EB%A1%B1%EB%B0%98%20-%ED%94%84%EB%9E%AD%ED%81%B4%EB%A6%B0%20-%EC%B9%B4%EC%98%A4%EB%A1%B1%EB%B0%98"
 driver.get(url)
-driver.find_element_by_xpath("/html/body/ui-view/div/main/div/div/section/div[1]/div[2]/div/div/a").click()
-driver.find_element_by_xpath("/html/body/ui-view/div/main/div/div/section/div[1]/div[2]/div/div/div/div/input[1]").clear()
-driver.find_element_by_xpath("/html/body/ui-view/div/main/div/div/section/div[1]/div[2]/div/div/div/div/input[1]").send_keys("2018-01-01")
-driver.find_element_by_xpath("/html/body/ui-view/div/main/div/div/section/div[1]/div[2]/div/div/div/div/input[2]").clear()
-driver.find_element_by_xpath("/html/body/ui-view/div/main/div/div/section/div[1]/div[2]/div/div/div/div/input[2]").send_keys("2020-09-08")
-driver.find_element_by_xpath("/html/body/ui-view/div/main/div/div/section/div[1]/div[2]/div/div/div/div/a").click()
+driver.find_element_by_class_name("present_selected").click()
+driver.find_element_by_id("search_start_date").clear()
+driver.find_element_by_id("search_start_date").send_keys("2018-01-01")
+driver.find_element_by_id("search_end_date").clear()
+driver.find_element_by_id("search_end_date").send_keys("2020-09-08")
+driver.find_element_by_id("periodSearch").click()
 
 #상세검색 제외 단어 추가
 # driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/div[2]/div[1]/div/form[8]/fieldset/a").click()
@@ -32,7 +33,6 @@ driver.find_element_by_xpath("/html/body/ui-view/div/main/div/div/section/div[1]
 # driver.find_element_by_xpath("/html/body/div[2]/div[2]/div/div[2]/div[1]/div/form[8]/fieldset/div/div[5]/input").click()
 
 
-driver.implicitly_wait(10)
 urls = []
 lastPage = False
 pages = []
@@ -70,8 +70,31 @@ print("url length : ", len(urls))  # 1475
 
 time.sleep(10)
 
-
+f = open("./urls.txt", "w")
 for u in urls:
+    f.write(u+"\n")
+
+    # request = requests.get(u)
+    # html = request.text
+    # print("html : ", html)
+    # driver.get(u)
+    # titleEl = driver.find_element_by_class_name("se-component-content").find_element_by_class_name("pcol1").text
+    # if titleEl == None:
+    #     titleEl = driver.find_element_by_class_name("itemSubjectBoldfont")
+    
+    # title = titleEl.text
+    # conts = driver.find_element_by_class_name()
+    
+    # dateEl = driver.find_element_by_class_name("se_publishDate")
+    # if dateEl == None:
+    #     dateEl = driver.find_element_by_class_name("_postAddDate")
+    # pub_date = dateEl.text
+
+f.close()
+
+
+def readAndParsing():
+    print("")
     driver.get(u)
     titleEl = driver.find_element_by_class_name("se-component-content").find_element_by_class_name("pcol1").text
     if titleEl == None:
@@ -84,4 +107,3 @@ for u in urls:
     if dateEl == None:
         dateEl = driver.find_element_by_class_name("_postAddDate")
     pub_date = dateEl.text
-
