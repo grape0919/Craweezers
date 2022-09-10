@@ -92,37 +92,37 @@ f.close()
 def readAndParsing():
     print("")
     for r in f.open("").read:
-    driver.get(u)
+        driver.get(u)
 
-    try:
-        titleEl = driver.find_element_by_class_name("se-title-text")
-    except:
         try:
-            titleEl = driver.find_element_by_class_name("se_title")htitle
+            titleEl = driver.find_element_by_class_name("se-title-text")
         except:
-            print("!@#!@# skip url : ", u)
-            continue
+            try:
+                titleEl = driver.find_element_by_class_name("se_title")
+            except:
+                print("!@#!@# skip url : ", u)
+                continue
 
-    title = titleEl.text
+        title = titleEl.text
 
-    conts = driver.find_element_by_class_name("__se_component_area")
-    id = postViewArea
-    try:
-        dateEl = driver.find_element_by_class_name("se_publishDate")
-    except:
+        conts = driver.find_element_by_class_name("__se_component_area")
+        id = postViewArea
         try:
-            dateEl = driver.find_element_by_class_name("_postAddDate")
+            dateEl = driver.find_element_by_class_name("se_publishDate")
         except:
-            
-            print("!@#!@# skip url : ", u)
-            continue
+            try:
+                dateEl = driver.find_element_by_class_name("_postAddDate")
+            except:
+                
+                print("!@#!@# skip url : ", u)
+                continue
 
-    pub_date = dateEl.text
+        pub_date = dateEl.text
 
-    blogContent = (title, conts, pub_date)
+        blogContent = (title, conts, pub_date)
 
-    crawedDataList.append(blogContent)
+        crawedDataList.append(blogContent)
 
 
-df = pd.DataFrame(crawedDataList)
-df.to_csv("./test.csv",sep="|",na_rep='NaN')
+    df = pd.DataFrame(crawedDataList)
+    df.to_csv("./test.csv",sep="|",na_rep='NaN')
